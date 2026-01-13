@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Walhimer - Interactive Installation Artist</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #1a1a1a;
+            --color-accent: #FFD700;
+            --color-light: #f8f8f8;
+            --color-mid: #666;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--color-primary);
+            background: var(--color-light);
+            overflow-x: hidden;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            page-break-after: always;
+        }
+
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                #4ECDC4 0%, 
+                #FFD700 25%, 
+                #FF6B6B 50%, 
+                #95E1D3 75%, 
+                #4ECDC4 100%);
+            opacity: 0.8;
+        }
+
+        h1 {
+            font-family: 'Crimson Text', serif;
+            font-size: 72px;
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+
+        h2 {
+            font-family: 'Crimson Text', serif;
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        h3 {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-mid);
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            max-width: 800px;
+            font-weight: 300;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 40px;
+            right: 80px;
+            font-size: 14px;
+            color: var(--color-mid);
+            font-weight: 300;
+        }
+
+        /* Page 1 - Cover */
+        .cover {
+            justify-content: center;
+            align-items: flex-start;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .cover::before {
+            background: white;
+        }
+
+        .cover h1 {
+            font-size: 96px;
+            margin-bottom: 20px;
+        }
+
+        .cover .subtitle {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 60px;
+            opacity: 0.95;
+        }
+
+        .cover .tagline {
+            font-size: 22px;
+            font-weight: 300;
+            max-width: 600px;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        /* Page 2 - Overview */
+        .overview {
+            background: white;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 40px;
+            flex: 1;
+        }
+
+        .overview-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-box {
+            padding: 30px;
+            background: #f8f8f8;
+            border-left: 4px solid var(--color-accent);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 600;
+            color: var(--color-primary);
+            font-family: 'Crimson Text', serif;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-mid);
+            margin-top: 10px;
+        }
+
+        .image-showcase {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .image-box {
+            width: 100%;
+            height: 280px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-caption {
+            font-size: 12px;
+            color: var(--color-mid);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* Interactive Canvas Containers */
+        .canvas-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Projects Page */
+        .projects {
+            background: var(--color-light);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 50px;
+            margin-top: 40px;
+        }
+
+        .demo-card {
+            background: white;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .demo-canvas-wrapper {
+            width: 100%;
+            height: 500px;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-info {
+            padding: 35px;
+            background: white;
+        }
+
+        .demo-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .demo-subtitle {
+            font-size: 16px;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .demo-description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--color-mid);
+        }
+
+        /* Contact */
+        .contact {
+            background: white;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 80px;
+            margin-top: 40px;
+            flex: 1;
+        }
+
+        .technical-specs {
+            list-style: none;
+        }
+
+        .technical-specs li {
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 16px;
+        }
+
+        .technical-specs li strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .contact-info {
+            background: #f8f8f8;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 30px;
+            color: var(--color-primary);
+        }
+
+        .contact-info p {
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .contact-info a {
+            color: var(--color-primary);
+            text-decoration: none;
+            border-bottom: 2px solid var(--color-accent);
+            transition: opacity 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            opacity: 0.7;
+        }
+
+        .cta {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 300;
+            color: var(--color-mid);
+        }
+
+        @media print {
+            .page {
+                page-break-after: always;
+            }
+            
+            body {
+                background: white;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .page {
+                padding: 40px;
+            }
+
+            h1 {
+                font-size: 56px;
+            }
+
+            .cover h1 {
+                font-size: 72px;
+            }
+
+            .content-grid,
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: Cover -->
+    <div class="page cover">
+        <h1>Mark Walhimer</h1>
+        <div class="subtitle">Interactive Installation Artist</div>
+        <p class="tagline">Creating dynamic, generative art installations for corporate lobbies, hospitals, and hotels — transforming spaces into immersive experiences through color, movement, and algorithmic beauty.</p>
+        <div class="page-number">01</div>
+    </div>
+
+    <!-- Page 2: Overview & Approach -->
+    <div class="page overview">
+        <h2>Transforming Spaces Through Interactive Art</h2>
+        
+        <div class="content-grid">
+            <div class="overview-text">
+                <p>My work brings life to transitional spaces where people gather, wait, and move through their day. Using generative algorithms and real-time computation, I create installations that respond to time, light, and sometimes viewer interaction.</p>
+                
+                <p>Each piece is custom-designed for its environment, considering the architecture, lighting conditions, audience, and brand identity of the space. The result is art that feels both timeless and ever-changing.</p>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Unique Compositions</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Continuous Evolution</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-showcase">
+                <div class="image-box">
+                    <div id="preview1" class="canvas-container"></div>
+                </div>
+                <p class="image-caption">Generative color compositions that evolve continuously</p>
+                
+                <div class="image-box">
+                    <div id="preview2" class="canvas-container"></div>
+                </div>
+                <p class="image-caption">Algorithmic patterns create visual rhythm</p>
+            </div>
+        </div>
+
+        <div class="page-number">02</div>
+    </div>
+
+    <!-- Page 3: Types of Work -->
+    <div class="page overview">
+        <h2>Types of Installations & Services</h2>
+        <h3>What I Create</h3>
+
+        <div class="content-grid">
+            <div>
+                <div class="stat-box" style="margin-bottom: 30px;">
+                    <div class="demo-title" style="margin-bottom: 15px; font-size: 24px;">Large-Scale Digital Installations</div>
+                    <p class="demo-description">Custom generative artworks for lobby walls, atriums, and prominent architectural features. Typically 8-20 feet wide, these pieces create commanding focal points that evolve continuously throughout the day.</p>
+                </div>
+
+                <div class="stat-box" style="margin-bottom: 30px;">
+                    <div class="demo-title" style="margin-bottom: 15px; font-size: 24px;">Waiting Room & Corridor Art</div>
+                    <p class="demo-description">Calming, meditative pieces designed specifically for healthcare environments and hospitality spaces. Color palettes and movement patterns can be tailored to promote relaxation and positive emotional responses.</p>
+                </div>
+
+                <div class="stat-box" style="margin-bottom: 30px;">
+                    <div class="demo-title" style="margin-bottom: 15px; font-size: 24px;">Multi-Screen Arrays</div>
+                    <p class="demo-description">Coordinated installations across multiple displays that work as a cohesive composition. Perfect for long corridors, elevator banks, or conference room entryways.</p>
+                </div>
+            </div>
+
+            <div>
+                <div class="stat-box" style="margin-bottom: 30px;">
+                    <div class="demo-title" style="margin-bottom: 15px; font-size: 24px;">Brand-Integrated Installations</div>
+                    <p class="demo-description">Artwork that incorporates corporate colors, logo elements, or brand language in subtle, sophisticated ways. Creates visual identity without feeling like signage.</p>
+                </div>
+
+                <div class="stat-box" style="margin-bottom: 30px;">
+                    <div class="demo-title" style="margin-bottom: 15px; font-size: 24px;">Interactive Pieces</div>
+                    <p class="demo-description">Installations that respond to viewer presence, touch, sound, or time of day. These create engaging experiences that invite participation and memorable moments.</p>
+                </div>
+
+                <div class="stat-box" style="margin-bottom: 30px;">
+                    <div class="demo-title" style="margin-bottom: 15px; font-size: 24px;">Full-Service Implementation</div>
+                    <p class="demo-description">From initial consultation and concept development through installation, calibration, and ongoing support. I manage all technical aspects including hardware specification, mounting systems, and software deployment.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-number">03</div>
+    </div>
+
+    <!-- Page 4: Interactive Demonstrations -->
+    <div class="page projects">
+        <h2>Live Installation Demonstrations</h2>
+        <h3>Interactive Concept Renderings</h3>
+        <p style="margin-bottom: 30px;">Below are three live, generative demonstrations running in real-time. Each showcases a different aesthetic approach suited to specific environments.</p>
+
+        <div class="demo-grid">
+            <!-- Demo 1: Color Field -->
+            <div class="demo-card">
+                <div class="demo-canvas-wrapper">
+                    <div id="demo1" style="width: 100%; height: 100%;"></div>
+                </div>
+                <div class="demo-info">
+                    <div class="demo-subtitle">Corporate Lobby Installation</div>
+                    <div class="demo-title">Color Field Meditation</div>
+                    <p class="demo-description">Flowing vertical color bands shift and blend in real-time, creating a calming, ever-changing composition. Perfect for high-traffic areas where visual serenity is valued. Each band oscillates through complementary hues with soft gradients and subtle movement.</p>
+                </div>
+            </div>
+
+            <!-- Demo 2: Kinetic Typography -->
+            <div class="demo-card">
+                <div class="demo-canvas-wrapper">
+                    <div id="demo2" style="width: 100%; height: 100%;"></div>
+                </div>
+                <div class="demo-info">
+                    <div class="demo-subtitle">Healthcare Waiting Area</div>
+                    <div class="demo-title">Kinetic Language</div>
+                    <p class="demo-description">Positive, healing words rotate and float through space, creating a meditative focal point. The piece uses gentle motion and calming language to create a sense of peace and hope. Words like "BREATHE," "HEAL," and "CALM" move with 3D perspective and varying opacity.</p>
+                </div>
+            </div>
+
+            <!-- Demo 3: Translucent Geometries -->
+            <div class="demo-card">
+                <div class="demo-canvas-wrapper">
+                    <div id="demo3" style="width: 100%; height: 100%;"></div>
+                </div>
+                <div class="demo-info">
+                    <div class="demo-subtitle">Luxury Hotel Lobby</div>
+                    <div class="demo-title">Translucent Layers</div>
+                    <p class="demo-description">Overlapping geometric forms with gradient fills create depth through translucency and subtle movement. The composition shifts slowly, revealing new color relationships as layers intersect. Perfect for corporate lobbies and modern office environments seeking sophisticated visual presence.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-number">04</div>
+    </div>
+
+    <!-- Page 5: Technical Info & Contact -->
+    <div class="page contact">
+        <h2>Technical Approach & Collaboration</h2>
+
+        <div class="two-column">
+            <div>
+                <h3>Implementation</h3>
+                <ul class="technical-specs">
+                    <li>
+                        <strong>Display Technology</strong>
+                        High-resolution LED displays, projection systems, or custom-built display arrays depending on space requirements and budget
+                    </li>
+                    <li>
+                        <strong>Software</strong>
+                        Custom generative algorithms built with p5.js, Processing, and WebGL for real-time rendering. All code optimized for 24/7 operation
+                    </li>
+                    <li>
+                        <strong>Installation</strong>
+                        Turnkey installation including hardware specification, software development, mounting systems, and on-site calibration
+                    </li>
+                    <li>
+                        <strong>Customization</strong>
+                        Each piece can be tailored to match brand colors, architectural features, and specific spatial requirements. Optional: integration with building systems, time-of-day variations, seasonal themes
+                    </li>
+                    <li>
+                        <strong>Maintenance</strong>
+                        Remote monitoring and updates available. Installations designed for reliability with redundant systems and easy serviceability
+                    </li>
+                </ul>
+            </div>
+
+            <div class="contact-info">
+                <h3>Let's Collaborate</h3>
+                <p><strong>Mark Walhimer</strong></p>
+                <p>Interactive Installation Artist</p>
+                <p style="margin-top: 30px;">
+                    <a href="mailto:mark@example.com">mark@example.com</a>
+                </p>
+                <p>
+                    <a href="https://markwalhimer.com">markwalhimer.com</a>
+                </p>
+
+                <div class="cta">
+                    I work with architects, interior designers, art consultants, and facility managers to create site-specific installations. Available for commissions, consultations, and artist talks.
+                </div>
+            </div>
+        </div>
+
+        <div class="page-number">05</div>
+    </div>
+
+    <script>
+        // ========================================
+        // PREVIEW 1: Simple Gradient Flow
+        // ========================================
+        new p5(function(p) {
+            let bands = [];
+            let time = 0;
+
+            p.setup = function() {
+                let canvas = p.createCanvas(600, 280);
+                canvas.parent('preview1');
+                p.colorMode(p.HSB, 360, 100, 100, 100);
+                p.noStroke();
+                
+                for (let i = 0; i < 8; i++) {
+                    bands.push({
+                        x: i * 75,
+                        hue: p.random(360),
+                        speed: p.random(0.02, 0.05)
+                    });
+                }
+            };
+
+            p.draw = function() {
+                p.background(240, 10, 95);
+                time += 1;
+
+                for (let band of bands) {
+                    let hue = (band.hue + time * band.speed) % 360;
+                    for (let y = 0; y < p.height; y++) {
+                        let sat = p.map(y, 0, p.height, 60, 80);
+                        let bri = p.map(y, 0, p.height, 70, 50);
+                        p.fill(hue, sat, bri, 70);
+                        p.rect(band.x, y, 75, 1);
+                    }
+                }
+            };
+        });
+
+        // ========================================
+        // PREVIEW 2: Vertical Stripes
+        // ========================================
+        new p5(function(p) {
+            let stripes = [];
+
+            p.setup = function() {
+                let canvas = p.createCanvas(600, 280);
+                canvas.parent('preview2');
+                p.colorMode(p.HSB, 360, 100, 100);
+                p.noStroke();
+                
+                let colors = [180, 45, 280, 60, 200];
+                for (let i = 0; i < 20; i++) {
+                    stripes.push({
+                        x: i * 30,
+                        hue: p.random(colors),
+                        sat: p.random(60, 90)
+                    });
+                }
+            };
+
+            p.draw = function() {
+                p.background(0, 0, 98);
+                
+                for (let stripe of stripes) {
+                    p.fill(stripe.hue, stripe.sat, 75);
+                    p.rect(stripe.x, 0, 30, p.height);
+                }
+            };
+        });
+
+        // ========================================
+        // DEMO 1: Color Field Meditation
+        // ========================================
+        new p5(function(p) {
+            let bands = [];
+            let time = 0;
+
+            p.setup = function() {
+                let parent = document.getElementById('demo1');
+                let canvas = p.createCanvas(parent.offsetWidth, parent.offsetHeight);
+                canvas.parent('demo1');
+                p.colorMode(p.HSB, 360, 100, 100, 100);
+                p.noStroke();
+                
+                initBands();
+            };
+
+            function initBands() {
+                bands = [];
+                const numBands = 12;
+                const baseWidth = p.width / numBands;
+                
+                for (let i = 0; i < numBands; i++) {
+                    bands.push({
+                        x: i * baseWidth,
+                        width: baseWidth * (1.2 + p.random(0.6)),
+                        hue1: p.random(360),
+                        hue2: (p.random(360) + 180) % 360,
+                        saturation: 60 + p.random(40),
+                        speed: 0.0003 + p.random(0.0005),
+                        offset: p.random(p.TWO_PI)
+                    });
+                }
+            }
+
+            p.draw = function() {
+                p.background(0, 0, 5);
+                time += 1;
+
+                for (let band of bands) {
+                    let oscillation = p.sin(time * band.speed + band.offset);
+                    let currentHue = band.hue1 + (band.hue2 - band.hue1) * (oscillation * 0.5 + 0.5);
+                    let currentSat = band.saturation + oscillation * 20;
+                    let brightness = 60 + oscillation * 15;
+
+                    for (let y = 0; y < p.height; y++) {
+                        let t = y / p.height;
+                        let h = currentHue + t * 30;
+                        let s = currentSat + t * 10;
+                        let b = brightness + t * 10;
+                        p.fill(h, s, b, 70);
+                        p.rect(band.x, y, band.width, 1);
+                    }
+                }
+            };
+
+            p.windowResized = function() {
+                let parent = document.getElementById('demo1');
+                p.resizeCanvas(parent.offsetWidth, parent.offsetHeight);
+                initBands();
+            };
+        });
+
+        // ========================================
+        // DEMO 2: Kinetic Language
+        // ========================================
+        new p5(function(p) {
+            let words = [];
+            let time = 0;
+            const vocabulary = [
+                'BREATHE', 'HOPE', 'HEAL', 'PEACE', 'CALM',
+                'STRENGTH', 'COMFORT', 'CARE', 'LIGHT', 'WELLNESS',
+                'SERENITY', 'GRACE', 'TRUST', 'RESTORE', 'RENEW'
+            ];
+
+            p.setup = function() {
+                let parent = document.getElementById('demo2');
+                let canvas = p.createCanvas(parent.offsetWidth, parent.offsetHeight);
+                canvas.parent('demo2');
+                p.colorMode(p.HSB, 360, 100, 100, 100);
+                p.textAlign(p.CENTER, p.CENTER);
+                p.textFont('Arial');
+                
+                initWords();
+            };
+
+            function initWords() {
+                words = [];
+                for (let i = 0; i < 25; i++) {
+                    words.push({
+                        text: p.random(vocabulary),
+                        x: p.random(p.width),
+                        y: p.random(p.height),
+                        z: p.random(500),
+                        rotX: p.random(p.TWO_PI),
+                        rotY: p.random(p.TWO_PI),
+                        rotZ: p.random(p.TWO_PI),
+                        speedX: p.random(-0.002, 0.002),
+                        speedY: p.random(-0.003, 0.003),
+                        speedRot: p.random(-0.005, 0.005),
+                        opacity: p.random(10, 30),
+                        size: p.random(40, 80)
+                    });
+                }
+            }
+
+            p.draw = function() {
+                p.background(0, 0, 96, 8);
+                time += 1;
+
+                words.sort((a, b) => b.z - a.z);
+
+                for (let word of words) {
+                    word.x += p.sin(time * word.speedX) * 0.5;
+                    word.y += p.cos(time * word.speedY) * 0.5;
+                    word.rotX += word.speedRot * 0.5;
+                    word.rotY += word.speedRot * 0.3;
+                    word.rotZ += word.speedRot;
+
+                    if (word.x < -200) word.x = p.width + 200;
+                    if (word.x > p.width + 200) word.x = -200;
+                    if (word.y < -200) word.y = p.height + 200;
+                    if (word.y > p.height + 200) word.y = -200;
+
+                    let scale = 300 / (300 + word.z);
+                    let dynamicOpacity = word.opacity * (0.3 + p.abs(p.cos(word.rotZ)) * 0.7);
+                    let hue = 200 + p.sin(word.rotX) * 30;
+
+                    p.push();
+                    p.translate(word.x, word.y);
+                    p.scale(scale);
+                    p.textSize(word.size);
+                    p.fill(hue, 30, 30, dynamicOpacity);
+                    p.text(word.text, 0, 0);
+                    p.pop();
+                }
+            };
+
+            p.windowResized = function() {
+                let parent = document.getElementById('demo2');
+                p.resizeCanvas(parent.offsetWidth, parent.offsetHeight);
+                initWords();
+            };
+        });
+
+        // ========================================
+        // DEMO 3: Translucent Layers
+        // ========================================
+        new p5(function(p) {
+            let shapes = [];
+            let time = 0;
+
+            p.setup = function() {
+                let parent = document.getElementById('demo3');
+                let canvas = p.createCanvas(parent.offsetWidth, parent.offsetHeight);
+                canvas.parent('demo3');
+                p.colorMode(p.HSB, 360, 100, 100, 100);
+                
+                initShapes();
+            };
+
+            function initShapes() {
+                shapes = [];
+                const numShapes = 15;
+                
+                for (let i = 0; i < numShapes; i++) {
+                    shapes.push({
+                        type: p.random() > 0.5 ? 'rect' : 'ellipse',
+                        x: p.random(p.width),
+                        y: p.random(p.height),
+                        w: p.random(200, 500),
+                        h: p.random(200, 500),
+                        rotation: p.random(p.TWO_PI),
+                        hue1: p.random(360),
+                        hue2: (p.random(360) + 60) % 360,
+                        saturation: p.random(50, 80),
+                        brightness: p.random(60, 90),
+                        speedX: p.random(-0.3, 0.3),
+                        speedY: p.random(-0.2, 0.2),
+                        speedRot: p.random(-0.002, 0.002),
+                        opacity: p.random(15, 25),
+                        pulseSpeed: p.random(0.001, 0.003),
+                        pulseOffset: p.random(p.TWO_PI)
+                    });
+                }
+            }
+
+            p.draw = function() {
+                p.background(0, 0, 98, 5);
+                time += 1;
+
+                for (let shape of shapes) {
+                    shape.x += shape.speedX;
+                    shape.y += shape.speedY;
+                    shape.rotation += shape.speedRot;
+
+                    if (shape.x < -shape.w / 2) shape.speedX = p.abs(shape.speedX);
+                    if (shape.x > p.width + shape.w / 2) shape.speedX = -p.abs(shape.speedX);
+                    if (shape.y < -shape.h / 2) shape.speedY = p.abs(shape.speedY);
+                    if (shape.y > p.height + shape.h / 2) shape.speedY = -p.abs(shape.speedY);
+
+                    let pulse = p.sin(time * shape.pulseSpeed + shape.pulseOffset);
+                    let scalePulse = 1 + pulse * 0.08;
+                    let currentOpacity = shape.opacity * (1 + pulse * 0.2);
+                    let hueShift = p.sin(time * 0.0005) * 30;
+
+                    p.push();
+                    p.translate(shape.x, shape.y);
+                    p.rotate(shape.rotation);
+                    p.scale(scalePulse);
+
+                    p.noStroke();
+                    
+                    // Gradient simulation
+                    for (let i = 0; i < 10; i++) {
+                        let t = i / 10;
+                        let h = p.lerp(shape.hue1 + hueShift, shape.hue2 + hueShift, t);
+                        let s = shape.saturation + t * 10;
+                        let b = shape.brightness - t * 10;
+                        let a = currentOpacity * (1 - t * 0.2);
+                        p.fill(h, s, b, a);
+                        
+                        if (shape.type === 'rect') {
+                            let size = 1 - t * 0.1;
+                            p.rectMode(p.CENTER);
+                            p.rect(0, 0, shape.w * size, shape.h * size, 20);
+                        } else {
+                            let size = 1 - t * 0.1;
+                            p.ellipse(0, 0, shape.w * size, shape.h * size);
+                        }
+                    }
+
+                    p.pop();
+                }
+            };
+
+            p.windowResized = function() {
+                let parent = document.getElementById('demo3');
+                p.resizeCanvas(parent.offsetWidth, parent.offsetHeight);
+                initShapes();
+            };
+        });
+    </script>
+</body>
+</html>
