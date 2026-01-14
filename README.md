@@ -22,4 +22,4 @@ Built with P5.js WebGL for real-time generative art rendering.
 
 Mark Walhimer  
 Email: mark@walhimer.com  
-Website: mark-walhimer.com
+Website: https://mark-walhimer.com
