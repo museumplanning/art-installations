@@ -1,4 +1,4 @@
-# Interactive Installations Portfolio
+# Mark Walhimer Interactive Art Installations Portfolio
 
 Live portfolio showcasing generative art installations for corporate lobbies, hospitals, and hotels.
 
@@ -6,7 +6,7 @@ Live portfolio showcasing generative art installations for corporate lobbies, ho
 
 ## About
 
-Interactive, algorithmic art that transforms spaces through color, movement, and continuous evolution. Each installation is custom-designed using generative algorithms and real-time computation.
+Mark Walhimer's interactive, algorithmic art transforms spaces through color, movement, and continuous evolution. Each installation is custom-designed using generative algorithms and real-time computation.
 
 ## Featured Demonstrations
 
@@ -16,7 +16,7 @@ Interactive, algorithmic art that transforms spaces through color, movement, and
 
 ## Technologies
 
-Built with P5.js for real-time generative art rendering.
+Built with P5.js WebGL for real-time generative art rendering.
 
 ## Contact
 
