@@ -2,7 +2,7 @@
 
 Live portfolio showcasing generative art installations for corporate lobbies, hospitals, and hotels.
 
-**[🎨 View Live Portfolio](https://museumplanning.github.io/interactive-installations/)**
+**[🎨 View Live Portfolio](https://museumplanning.github.io/art-installations/)**
 
 ## About
 
